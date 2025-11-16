@@ -3,7 +3,7 @@ INCLUDE Macros.inc
 
 .DATA
 
-; Menu items arrays 
+; ---------------- MENU ARRAYS ----------------
 BreakfastArr DWORD OFFSET Paratha, OFFSET Tea, OFFSET Omelette, OFFSET Pancake, OFFSET Coffee
 LunchArr     DWORD OFFSET Biryani, OFFSET Karahi, OFFSET Roti, OFFSET Salad, OFFSET Soup
 DinnerArr    DWORD OFFSET ChickenHandi, OFFSET Naan, OFFSET ColdDrink, OFFSET FishCurry, OFFSET IceCream
@@ -18,7 +18,7 @@ subTotal DWORD 0
 totalNoOfOrders DWORD 0
 selectedMenu DWORD 0
 
-; Item names
+; ---------------- ITEM NAMES ----------------
 Paratha      BYTE "(1) Paratha",0
 Tea          BYTE "(2) Tea",0
 Omelette     BYTE "(3) Omelette",0
@@ -37,7 +37,7 @@ ColdDrink    BYTE "(3) Cold Drink",0
 FishCurry    BYTE "(4) Fish Curry",0
 IceCream     BYTE "(5) Ice Cream",0
 
-; messages (kept as data for clarity if you want)
+; ---------------- MESSAGES ----------------
 enterQuantity byte "Enter Quantity: ", 0
 addMore byte "Add more(yes-1 / no-0): ", 0
 enterChoise byte "Enter your choise: ", 0
@@ -47,29 +47,42 @@ discount_10 dword 10
 discount_5 dword 5
 multiply_100 dword 100
 
+; ---------------- WELCOME & INFO ----------------
+welcomeMsg db 0Dh,0Ah, "=============================================",0Dh,0Ah,
+            "      WELCOME TO FAST FOOD RESTAURANT        ",0Dh,0Ah,
+            "=============================================",0Dh,0Ah,0
+
+restaurantInfo db 0Dh,0Ah,
+                "    Contact: 0300-1234567        ",0Dh,0Ah,
+                "    Location: Karachi             ",0Dh,0Ah,
+                "************************************************",0Dh,0Ah,0
+
 .CODE
 
-;----------------------------------------------------------------------------------------------------------------------------------
-;||||||||||||||||||||||||||||||||||||||||||||| ==== Main PROCEDURE Start ==== |||||||||||||||||||||||||||||||||||||||||||||||||
-;----------------------------------------------------------------------------------------------------------------------------------
- 
+; ================= MAIN =================
 main PROC
+    mov eax, 0Eh          ; yellow
+    call SetTextColor
+
+    ; --- print welcome + restaurant info only once ---
+    mov edx, OFFSET welcomeMsg
+    call WriteString
+    mov edx, OFFSET restaurantInfo
+    call WriteString
+
+    mov eax, 0Fh          ; reset to bright white
+    call SetTextColor
 
     call DisplayMenu
     call calcTotal
     call CalcDiscount
+
     exit
-    main endp
-    ; ==== Main PROCEDURE End ====
+main ENDP
 
-;----------------------------------------------------------------------------------------------------------------------------------
-;||||||||||||||||||||||||||||||||||||||||||| ==== DisplayMenu PROCEDURE Start ==== ||||||||||||||||||||||||||||||||||||||||||||||||
-;----------------------------------------------------------------------------------------------------------------------------------
- 
-DisplayMenu Proc
-
+; ================= DISPLAY MENU =================
+DisplayMenu PROC
 askMenuChoice:
-
     call Crlf
     call Crlf
     mWrite "-----------------------------------------------------------------"
@@ -79,11 +92,11 @@ askMenuChoice:
     mWrite "-----------------------------------------------------------------"
     call Crlf
     call Crlf
-    mwrite"   1 - BREAKFAST"
+    mWrite "   1 - BREAKFAST"
     call Crlf
-    mwrite"   2 - LUNCH"
+    mWrite "   2 - LUNCH"
     call Crlf
-    mwrite"   3 - DINNER"
+    mWrite "   3 - DINNER"
     call Crlf
     call Crlf
     mWrite "Enter Choice (1-3): "
@@ -95,7 +108,7 @@ askMenuChoice:
     je lunch
     cmp eax, 3
     je dinner
-     
+
     call Crlf
     mWrite "Invalid Input! Please Try Again."
     call Crlf
@@ -107,11 +120,8 @@ breakfast:
     call Crlf
     mWrite "------------------------- BREAKFAST MENU -------------------------"
     call Crlf
-    call Crlf
     mWrite "ITEM                   COST (Rs)        CODE"
     call Crlf 
-    call Crlf
-
     mWrite "1) Paratha             Rs.50              1"
     call Crlf
     mWrite "2) Tea                 Rs.30              2"
@@ -123,7 +133,6 @@ breakfast:
     mWrite "5) Coffee              Rs.40              5"
     call Crlf
     call Crlf
-
     jmp Taking_Order
 
 lunch:
@@ -132,11 +141,8 @@ lunch:
     call Crlf
     mWrite "--------------------------- LUNCH MENU ---------------------------"
     call Crlf
-    call Crlf
     mWrite "ITEM                   COST (Rs)        CODE"
     call Crlf 
-    call Crlf
-
     mWrite "1) Biryani             Rs.250             1"
     call Crlf
     mWrite "2) Karahi              Rs.400             2"
@@ -148,7 +154,6 @@ lunch:
     mWrite "5) Soup                Rs.80              5"
     call Crlf
     call Crlf
-
     jmp Taking_Order
 
 dinner:
@@ -157,11 +162,8 @@ dinner:
     call Crlf
     mWrite "--------------------------- DINNER MENU ---------------------------"
     call Crlf
-    call Crlf
     mWrite "ITEM                   COST (Rs)        CODE"
     call Crlf 
-    call Crlf
-
     mWrite "1) Chicken Handi       Rs.450             1"
     call Crlf
     mWrite "2) Naan (per piece)    Rs.30              2"
@@ -173,35 +175,21 @@ dinner:
     mWrite "5) Ice Cream           Rs.90              5"
     call Crlf
     call Crlf
-
     jmp Taking_Order
 
-    call Crlf 
-   
-
-Taking_Order: 
-   call TakingOrder
-   
-   ret
+Taking_Order:
+    call TakingOrder
+    ret
 DisplayMenu ENDP
 
-   ; ==== DisplayMenu PROCEDURE End ==== 
-
-
-;----------------------------------------------------------------------------------------------------------------------------------
-;||||||||||||||||||||||||||||||||||||||||||| ==== TakingOrder PROCEDURE Start ==== ||||||||||||||||||||||||||||||||||||||||||||||||
-;----------------------------------------------------------------------------------------------------------------------------------
- 
-TakingOrder Proc
-
+; ================= TAKING ORDER =================
+TakingOrder PROC
     call Crlf
-	call Crlf
-
+    call Crlf
     mov esi, 0
 
 continueTakingOrder:
-
-    mWrite"Enter item code (1-5): "
+    mWrite "Enter item code (1-5): "
     call ReadDec
     cmp eax, 5
     ja invalidCode
@@ -217,7 +205,7 @@ validCode:
     inc totalNoOfOrders
     mov orderCode[esi], eax
 
-    mWrite"Enter the desired quantity: "
+    mWrite "Enter the desired quantity: "
     call ReadDec
     mov quantity[esi], eax
 
@@ -225,35 +213,24 @@ validCode:
 
 addMoreItems:
     call Crlf
-    mWrite"Do you wish to continue ordering? (1=Yes / 0=No): "
+    mWrite "Do you wish to continue ordering? (1=Yes / 0=No): "
     call ReadDec
-
     cmp eax, 1
     je continueTakingOrder
-
     cmp eax, 0
     je exit_takingOrder
 
     call Crlf
-    mWrite"Invalid Input! Please Clarify."
+    mWrite "Invalid Input! Please Clarify."
     call Crlf
     jmp addMoreItems
 
-
-   exit_takingOrder:
-   ret
-
+exit_takingOrder:
+    ret
 TakingOrder ENDP
 
-    ; ==== TakingOrder PROCEDURE End ==== 
-
-
-;----------------------------------------------------------------------------------------------------------------------------------
-;||||||||||||||||||||||||||||||||||||||||| ==== calcTotal PROCEDURE Start ==== ||||||||||||||||||||||||||||||||||||||||||||||||
-;----------------------------------------------------------------------------------------------------------------------------------
-
+; ================= CALCULATE TOTAL =================
 calcTotal PROC
-
     call Crlf
     mWrite "-----------------------------------------------------------------"
     call Crlf
@@ -265,21 +242,20 @@ calcTotal PROC
     call Crlf
     call Crlf
 
-    mov ecx, totalNoOfOrders      
-    mov esi, 0                    
-    mov edi, 0                    
+    mov ecx, totalNoOfOrders
+    mov esi, 0
+    mov edi, 0
     mov subTotal, 0
 
 nextItem:
     cmp ecx, 0
     je printSubTotal
 
-
     mov eax, orderCode[esi]
-    mov ebx, eax                  
-    dec eax                      
-      
-    ; Print Item name depending on selectedMenu 
+    mov ebx, eax
+    dec eax
+
+    ; Determine item name
     mov edx, selectedMenu
     cmp edx, 1
     je nameBreakfast
@@ -299,7 +275,7 @@ nameDinner:
     je nd5
     jmp afterName
 
-nd1: mWrite " (1) Chicken Handi    "     
+nd1: mWrite " (1) Chicken Handi    "
      jmp afterName
 nd2: mWrite " (2) Naan (per piece) "
      jmp afterName
@@ -358,21 +334,18 @@ nb4: mWrite " (4) Pancake          "
 nb5: mWrite " (5) Coffee           "
 
 afterName:
- 
-    mWrite "    "   ; spacing between name and qty
-
-    
+    mWrite "    "
     mov eax, quantity[edi]
     call WriteDec
+    mWrite "         "
 
-    mWrite "         " ; spacing between qty and price
-     
+    ; Determine price
     mov edx, selectedMenu
     cmp edx, 1
     je priceBreakfast
     cmp edx, 2
     je priceLunch
-   
+
 priceDinner:
     mov eax, orderCode[esi]
     dec eax
@@ -389,21 +362,19 @@ priceBreakfast:
     mov eax, orderCode[esi]
     dec eax
     mov ebp, BreakfastCosts[eax*4]
-    
-priceGot: 
+
+priceGot:
     mov eax, ebp
     call WriteDec
+    mWrite "         "
 
-    mWrite "         " ; spacing between price and total
-     
     mov eax, quantity[edi]
-    imul eax, ebp          ; eax = qty * price
+    imul eax, ebp
     call WriteDec
-     
-    add subTotal, eax
 
+    add subTotal, eax
     call Crlf
-     
+
     add esi, 4
     add edi, 4
     dec ecx
@@ -418,48 +389,36 @@ printSubTotal:
     call WriteDec
     call Crlf
     call Crlf
-
     ret
-
 calcTotal ENDP
 
-    ;           ==== calcTotal PROCEDURE End ==== 
-
-;--------------------------------------------------------------------------------------------------------------------------------
-;||||||||||||||||||||||||||||||||||||||||||||||| ==== CalcDiscount PROCEDURE Start===||||||||||||||||||||||||||||||||||||||||||||
-;--------------------------------------------------------------------------------------------------------------------------------
-
+; ================= CALCULATE DISCOUNT =================
 CalcDiscount PROC
-
-printDiscount:
-
-    ; Ensure EAX holds subtotal before comparing
     mov eax, subTotal
 
-    cmp eax,1000
+    cmp eax, 1000
     jge Discount10
-    cmp eax,500
+    cmp eax, 500
     jge Discount5
 
     ; No discount
     call Crlf
     mWrite "Discount (0%):                                          0"
-    call crlf
+    call Crlf
     mWrite "-----------------------------------------------------------------"
-    call crlf
-    mov eax,0
+    call Crlf
+    mov eax, 0
     jmp net_total
 
 Discount10:
-
-    imul discount_10     ; mul eax * 10   , subtotal * 10%
-    idiv multiply_100     ; div (subtotal *10) / 100  to get 10% discount 
+    imul discount_10
+    idiv multiply_100
     call Crlf
     mWrite "Discount (10%):                                         "
     call WriteDec
-    call crlf
+    call Crlf
     mWrite "-----------------------------------------------------------------"
-    call crlf
+    call Crlf
     jmp net_total
 
 Discount5:
@@ -468,46 +427,40 @@ Discount5:
     call Crlf
     mWrite "Discount (5%):                                          "
     call WriteDec
-    call crlf
+    call Crlf
     mWrite "-----------------------------------------------------------------"
-    call crlf
+    call Crlf
     jmp net_total
 
-
 net_total:
-    sub subTotal ,eax
+    sub subTotal, eax
     call Crlf
     mWrite "Net Total :                                            "
-    mov eax ,subTotal
-    mov NetTotal ,eax
-    mov eax ,NetTotal
-    call writedec
-    call crlf
-    call crlf 
-
+    mov eax, subTotal
+    mov NetTotal, eax
+    mov eax, NetTotal
+    call WriteDec
+    call Crlf
+    call Crlf
 
 get_payment:
-
     mWrite "Enter Payment (Rs):                                    "
-    call Readint
+    call ReadInt
 
 print_change:
-    sub eax,NetTotal
-    mov change,eax  ; chnage = eax 
-    mov eax,change 
+    sub eax, NetTotal
+    mov change, eax
+    mov eax, change
     call Crlf
     mWrite "Change:                                                "
-    call writedec
-    call crlf
+    call WriteDec
+    call Crlf
     mWrite "-----------------------------------------------------------------"
-    call crlf
+    call Crlf
     mWrite "Thank you! Visit Again."
-    call crlf
-    call crlf
+    call Crlf
+    call Crlf
     ret
-
 CalcDiscount ENDP
-
-    ; ==== CalcDiscount PROCEDURE End ==== 
 
 END main

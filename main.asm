@@ -425,6 +425,7 @@ mWrite"Discount(0%):                                             0"
 call crlf
 mWrite"-----------------------------------------------------------------"
 call crlf
+mov eax,0
 jmp net_total
 
 Discount10:
@@ -454,6 +455,7 @@ sub subTotal ,eax
 mWrite"Net Total:                                                 "
 mov eax ,subTotal
 mov NetTotal ,eax
+mov eax ,NetTotal
 call writedec
 call crlf
 call crlf 

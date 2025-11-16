@@ -37,7 +37,7 @@ ColdDrink    BYTE "(3) Cold Drink",0
 FishCurry    BYTE "(4) Fish Curry",0
 IceCream     BYTE "(5) Ice Cream",0
 
-; messages
+; messages (kept as data for clarity if you want)
 enterQuantity byte "Enter Quantity: ", 0
 addMore byte "Add more(yes-1 / no-0): ", 0
 enterChoise byte "Enter your choise: ", 0
@@ -50,7 +50,7 @@ multiply_100 dword 100
 .CODE
 
 ;----------------------------------------------------------------------------------------------------------------------------------
-;||||||||||||||||||||||||||||||||||||||||||||||||| ==== Main PROCEDURE Start ==== |||||||||||||||||||||||||||||||||||||||||||||||||
+;||||||||||||||||||||||||||||||||||||||||||||| ==== Main PROCEDURE Start ==== |||||||||||||||||||||||||||||||||||||||||||||||||
 ;----------------------------------------------------------------------------------------------------------------------------------
  
 main PROC
@@ -70,18 +70,23 @@ DisplayMenu Proc
 
 askMenuChoice:
 
-    call crlf
-    mWrite "--------------------------- CHOOSE MENU ---------------------------"
-    call crlf
+    call Crlf
+    call Crlf
+    mWrite "-----------------------------------------------------------------"
+    call Crlf
+    mWrite "                      CHOOSE A MENU OPTION                       "
+    call Crlf
+    mWrite "-----------------------------------------------------------------"
+    call Crlf
+    call Crlf
     mwrite"   1 - BREAKFAST"
-    call crlf
+    call Crlf
     mwrite"   2 - LUNCH"
-    call crlf
-    mwrite"   3 - DINNER "    
-
-    call crlf
-    call crlf
-    mWrite"Enter Choice: "
+    call Crlf
+    mwrite"   3 - DINNER"
+    call Crlf
+    call Crlf
+    mWrite "Enter Choice (1-3): "
     call ReadDec
 
     cmp eax, 1
@@ -91,84 +96,91 @@ askMenuChoice:
     cmp eax, 3
     je dinner
      
-    mWrite "Invalid Input! Please Try Again."  
-    call crlf
+    call Crlf
+    mWrite "Invalid Input! Please Try Again."
+    call Crlf
     jmp askMenuChoice
 
 breakfast:
     mov selectedMenu, 1
-    call crlf
-    call crlf
+    call Crlf
+    call Crlf
     mWrite "------------------------- BREAKFAST MENU -------------------------"
-    call crlf
-    call crlf
-    mWrite "ITEMS                COST                  CODE"
-    call crlf 
-    
+    call Crlf
+    call Crlf
+    mWrite "ITEM                   COST (Rs)        CODE"
+    call Crlf 
+    call Crlf
 
-    mWrite "Paratha             Rs.50                   1"
-    call crlf
-    mWrite "Tea                 Rs.30                   2"
-    call crlf
-    mWrite "Omelette            Rs.70                   3"
-    call crlf
-    mWrite "Pancake             Rs.60                   4"
-    call crlf
-    mWrite "Coffee              Rs.40                   5"
+    mWrite "1) Paratha             Rs.50              1"
+    call Crlf
+    mWrite "2) Tea                 Rs.30              2"
+    call Crlf
+    mWrite "3) Omelette            Rs.70              3"
+    call Crlf
+    mWrite "4) Pancake             Rs.60              4"
+    call Crlf
+    mWrite "5) Coffee              Rs.40              5"
+    call Crlf
+    call Crlf
 
     jmp Taking_Order
 
 lunch:
     mov selectedMenu, 2
-    call crlf
-    call crlf
+    call Crlf
+    call Crlf
     mWrite "--------------------------- LUNCH MENU ---------------------------"
-    call crlf
-    call crlf
-    mWrite "ITEMS                COST                  CODE"
-    call crlf 
-    call crlf
+    call Crlf
+    call Crlf
+    mWrite "ITEM                   COST (Rs)        CODE"
+    call Crlf 
+    call Crlf
 
-    mWrite "Biryani             Rs.250                  1"
-    call crlf
-    mWrite "Karahi              Rs.400                  2"
-    call crlf
-    mWrite "Roti                Rs.20                   3"
-    call crlf
-    mWrite "Salad               Rs.100                  4"
-    call crlf
-    mWrite "Soup                Rs.80                   5"
+    mWrite "1) Biryani             Rs.250             1"
+    call Crlf
+    mWrite "2) Karahi              Rs.400             2"
+    call Crlf
+    mWrite "3) Roti                Rs.20              3"
+    call Crlf
+    mWrite "4) Salad               Rs.100             4"
+    call Crlf
+    mWrite "5) Soup                Rs.80              5"
+    call Crlf
+    call Crlf
 
     jmp Taking_Order
 
 dinner:
     mov selectedMenu, 3
-    call crlf
-    call crlf
+    call Crlf
+    call Crlf
     mWrite "--------------------------- DINNER MENU ---------------------------"
-    call crlf
-    call crlf
-    mWrite "ITEMS                COST                  CODE"
-    call crlf 
-    call crlf
+    call Crlf
+    call Crlf
+    mWrite "ITEM                   COST (Rs)        CODE"
+    call Crlf 
+    call Crlf
 
-    mWrite "Chicken Handi       Rs.450                  1"
-    call crlf
-    mWrite "Naan                Rs.30                   2"
-    call crlf
-    mWrite "Cold Drink          Rs.100                  3"
-    call crlf
-    mWrite "Fish Curry          Rs.300                  4"
-    call crlf
-    mWrite "Ice Cream           Rs.90                   5"
+    mWrite "1) Chicken Handi       Rs.450             1"
+    call Crlf
+    mWrite "2) Naan (per piece)    Rs.30              2"
+    call Crlf
+    mWrite "3) Cold Drink          Rs.100             3"
+    call Crlf
+    mWrite "4) Fish Curry          Rs.300             4"
+    call Crlf
+    mWrite "5) Ice Cream           Rs.90              5"
+    call Crlf
+    call Crlf
 
     jmp Taking_Order
 
-    call crlf 
+    call Crlf 
    
 
-    Taking_Order: 
-       call TakingOrder
+Taking_Order: 
+   call TakingOrder
    
    ret
 DisplayMenu ENDP
@@ -182,22 +194,23 @@ DisplayMenu ENDP
  
 TakingOrder Proc
 
-    call crlf
-	call crlf
+    call Crlf
+	call Crlf
 
     mov esi, 0
 
 continueTakingOrder:
 
-    mWrite"Enter your choice by typing the corresponding code: "
+    mWrite"Enter item code (1-5): "
     call ReadDec
     cmp eax, 5
     ja invalidCode
     jmp validCode
 
 invalidCode:
+    call Crlf
     mWrite "Invalid Item Code! Please Try Again."
-    call crlf
+    call Crlf
     jmp continueTakingOrder
 
 validCode:
@@ -211,8 +224,8 @@ validCode:
     add esi, 4
 
 addMoreItems:
-    call crlf
-    mWrite"Do you wish to continue ordering? (1 = Yes, 0 = No): "
+    call Crlf
+    mWrite"Do you wish to continue ordering? (1=Yes / 0=No): "
     call ReadDec
 
     cmp eax, 1
@@ -221,8 +234,9 @@ addMoreItems:
     cmp eax, 0
     je exit_takingOrder
 
+    call Crlf
     mWrite"Invalid Input! Please Clarify."
-    call crlf
+    call Crlf
     jmp addMoreItems
 
 
@@ -235,7 +249,7 @@ TakingOrder ENDP
 
 
 ;----------------------------------------------------------------------------------------------------------------------------------
-;||||||||||||||||||||||||||||||||||||||||||||| ==== calcTotal PROCEDURE Start ==== ||||||||||||||||||||||||||||||||||||||||||||||||
+;||||||||||||||||||||||||||||||||||||||||| ==== calcTotal PROCEDURE Start ==== ||||||||||||||||||||||||||||||||||||||||||||||||
 ;----------------------------------------------------------------------------------------------------------------------------------
 
 calcTotal PROC
@@ -243,11 +257,11 @@ calcTotal PROC
     call Crlf
     mWrite "-----------------------------------------------------------------"
     call Crlf
-    mWrite "                         DETAILED BILL"
+    mWrite "                         DETAILED BILL                             "
     call Crlf
     mWrite "-----------------------------------------------------------------"
     call Crlf
-    mWrite "Item                Qty          Price          Total"
+    mWrite "Item                   Qty       Price (Rs)      Total (Rs)"
     call Crlf
     call Crlf
 
@@ -264,7 +278,7 @@ nextItem:
     mov eax, orderCode[esi]
     mov ebx, eax                  
     dec eax                      
-     
+      
     ; Print Item name depending on selectedMenu 
     mov edx, selectedMenu
     cmp edx, 1
@@ -285,15 +299,15 @@ nameDinner:
     je nd5
     jmp afterName
 
-nd1: mWrite "(1) Chicken Handi"     
+nd1: mWrite " (1) Chicken Handi    "     
      jmp afterName
-nd2: mWrite "(2) Naan (per piece)"
+nd2: mWrite " (2) Naan (per piece) "
      jmp afterName
-nd3: mWrite "(3) Cold Drink"
+nd3: mWrite " (3) Cold Drink       "
      jmp afterName
-nd4: mWrite "(4) Fish Curry"
+nd4: mWrite " (4) Fish Curry       "
      jmp afterName
-nd5: mWrite "(5) Ice Cream"
+nd5: mWrite " (5) Ice Cream        "
      jmp afterName
 
 nameLunch:
@@ -309,15 +323,15 @@ nameLunch:
     je nl5
     jmp afterName
 
-nl1: mWrite "(1) Biryani"
+nl1: mWrite " (1) Biryani          "
      jmp afterName
-nl2: mWrite "(2) Karahi"
+nl2: mWrite " (2) Karahi           "
      jmp afterName
-nl3: mWrite "(3) Roti"
+nl3: mWrite " (3) Roti             "
      jmp afterName
-nl4: mWrite "(4) Salad"
+nl4: mWrite " (4) Salad            "
      jmp afterName
-nl5: mWrite "(5) Soup"
+nl5: mWrite " (5) Soup             "
      jmp afterName
 
 nameBreakfast:
@@ -333,25 +347,25 @@ nameBreakfast:
     je nb5
     jmp afterName
 
-nb1: mWrite "(1) Paratha"
+nb1: mWrite " (1) Paratha          "
      jmp afterName
-nb2: mWrite "(2) Tea"
+nb2: mWrite " (2) Tea              "
      jmp afterName
-nb3: mWrite "(3) Omelette"
+nb3: mWrite " (3) Omelette         "
      jmp afterName
-nb4: mWrite "(4) Pancake"
+nb4: mWrite " (4) Pancake          "
      jmp afterName
-nb5: mWrite "(5) Coffee"
+nb5: mWrite " (5) Coffee           "
 
 afterName:
  
-    mWrite "          "
+    mWrite "    "   ; spacing between name and qty
 
     
     mov eax, quantity[edi]
     call WriteDec
 
-    mWrite "          "
+    mWrite "         " ; spacing between qty and price
      
     mov edx, selectedMenu
     cmp edx, 1
@@ -380,7 +394,7 @@ priceGot:
     mov eax, ebp
     call WriteDec
 
-    mWrite "          "
+    mWrite "         " ; spacing between price and total
      
     mov eax, quantity[edi]
     imul eax, ebp          ; eax = qty * price
@@ -399,9 +413,10 @@ printSubTotal:
     call Crlf
     mWrite "---------------------------------------------------------------"
     call Crlf
-    mWrite "SUBTOTAL :                                                 "
+    mWrite "SUBTOTAL :                                              "
     mov eax, subTotal
     call WriteDec
+    call Crlf
     call Crlf
 
     ret
@@ -417,68 +432,79 @@ calcTotal ENDP
 CalcDiscount PROC
 
 printDiscount:
-cmp eax,1000
-jge Discount10
-cmp eax,500
-jge Discount5
-mWrite"Discount(0%):                                             0"
-call crlf
-mWrite"-----------------------------------------------------------------"
-call crlf
-mov eax,0
-jmp net_total
+
+    ; Ensure EAX holds subtotal before comparing
+    mov eax, subTotal
+
+    cmp eax,1000
+    jge Discount10
+    cmp eax,500
+    jge Discount5
+
+    ; No discount
+    call Crlf
+    mWrite "Discount (0%):                                          0"
+    call crlf
+    mWrite "-----------------------------------------------------------------"
+    call crlf
+    mov eax,0
+    jmp net_total
 
 Discount10:
 
-imul discount_10     ; mul eax * 10   , subtotal * 10%
-idiv multiply_100     ; div (subtotal *10) / 100  to get 10% discount 
-mWrite"Discount(10%):                                            "
-call writedec
-call crlf
-mWrite"-----------------------------------------------------------------"
-call crlf
-jmp net_total
+    imul discount_10     ; mul eax * 10   , subtotal * 10%
+    idiv multiply_100     ; div (subtotal *10) / 100  to get 10% discount 
+    call Crlf
+    mWrite "Discount (10%):                                         "
+    call WriteDec
+    call crlf
+    mWrite "-----------------------------------------------------------------"
+    call crlf
+    jmp net_total
 
 Discount5:
-imul discount_5
-idiv multiply_100
-mWrite"Discount(5%):                                               "
-call writedec
-call crlf
-mWrite"-----------------------------------------------------------------"
-call crlf
-jmp net_total
+    imul discount_5
+    idiv multiply_100
+    call Crlf
+    mWrite "Discount (5%):                                          "
+    call WriteDec
+    call crlf
+    mWrite "-----------------------------------------------------------------"
+    call crlf
+    jmp net_total
 
 
 net_total:
-sub subTotal ,eax
-mWrite"Net Total:                                                 "
-mov eax ,subTotal
-mov NetTotal ,eax
-mov eax ,NetTotal
-call writedec
-call crlf
-call crlf 
+    sub subTotal ,eax
+    call Crlf
+    mWrite "Net Total :                                            "
+    mov eax ,subTotal
+    mov NetTotal ,eax
+    mov eax ,NetTotal
+    call writedec
+    call crlf
+    call crlf 
 
 
 get_payment:
 
-mWrite"Enter Payment:                                            "
-call Readint
+    mWrite "Enter Payment (Rs):                                    "
+    call Readint
 
 print_change:
-sub eax,NetTotal
-mov change,eax  ; chnage = eax 
-mov eax,change 
-mWrite"Change:                                                    "
-call writedec
-call crlf
-mWrite"-----------------------------------------------------------------"
-call crlf
-mWrite"Thank you! Visit Again."
-call crlf
-call crlf
-ret
+    sub eax,NetTotal
+    mov change,eax  ; chnage = eax 
+    mov eax,change 
+    call Crlf
+    mWrite "Change:                                                "
+    call writedec
+    call crlf
+    mWrite "-----------------------------------------------------------------"
+    call crlf
+    mWrite "Thank you! Visit Again."
+    call crlf
+    call crlf
+    ret
 
 CalcDiscount ENDP
 

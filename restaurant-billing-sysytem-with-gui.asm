@@ -1,4 +1,3 @@
-
 ; ============================================================
 ;   FAST FOOD MANAGEMENT SYSTEM (GUI + Console Hybrid)
 ;   GUI support using MessageBoxA (Enhanced Popups)
@@ -9,7 +8,7 @@ INCLUDE Macros.inc          ; Needed for mWrite
 
 includelib user32.lib
 
-a
+
 .DATA
 
 ; ---------------- GUI TEXT ----------------
